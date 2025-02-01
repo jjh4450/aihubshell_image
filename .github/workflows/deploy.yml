@@ -13,7 +13,7 @@ permissions:
   contents: write
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: jjh4450/aihubshell_unofficial_image
+  IMAGE_NAME: jjh4450/aihubshell_unofficial
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
