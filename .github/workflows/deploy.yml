@@ -3,37 +3,51 @@ on:
   push:
     branches:
       - main
-    tags:
-      - 'v*'
   schedule:
     - cron: '0 0 * * 1'
+  workflow_dispatch:
 permissions:
   packages: write
   id-token: write
   contents: write
+  actions: write
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: jjh4450/aihubshell_unofficial
+  IMAGE_NAME: jjh4450/aihubshell_unofficial_image
 jobs:
-  build-and-push:
+  build-and-release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate version
+        id: version
+        run: |
+          DATE=$(date +'%Y.%m.%d')
+          if [[ "${{ github.event_name }}" == "push" ]]; then
+            COUNT=$(git rev-list --count HEAD)
+            echo "version=v${DATE}.${COUNT}" | tee -a $GITHUB_ENV
+          else
+            echo "version=v${DATE}" | tee -a $GITHUB_ENV
+
       - uses: docker/login-action@v2
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
       - uses: docker/setup-buildx-action@v2
-      - id: meta
-        uses: docker/metadata-action@v5
+
+      - uses: docker/metadata-action@v5
+        id: meta
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=${{ env.version }}
+            type=raw,value=latest
+
       - uses: docker/build-push-action@v3
         with:
           context: .
@@ -43,11 +57,43 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           platforms: linux/amd64,linux/arm64
+
       - name: Create Release
-        if: startsWith(github.ref, 'refs/tags/')
-        uses: softprops/action-gh-release@v1
-        with:
-          generate_release_notes: true
-          files: |
-            README.md
-            LICENSE
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          RELEASE_TYPE="주간 릴리스"
+          if [[ "${{ github.event_name }}" == "push" ]]; then
+            RELEASE_TYPE="패치 릴리스"
+          fi
+          gh release create "${{ env.version }}" \
+            --generate-notes \
+            --title "${RELEASE_TYPE} ${{ env.version }}" \
+            --draft=false \
+            --prerelease=false
+
+  cleanup:
+    needs: build-and-release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete old images
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          CUTOFF_DATE=$(date -d "30 days ago" +%Y-%m-%d)
+          for pkg in $(gh api "/user/packages/container/${{ env.IMAGE_NAME }}/versions" --paginate | \
+                       jq -r '.[] | select(.metadata.container.tags[] | startswith("v")) | select(.created_at < "'$CUTOFF_DATE'") | .id'); do
+            gh api --method DELETE "/user/packages/container/${{ env.IMAGE_NAME }}/versions/$pkg"
+          done
+
+      - name: Delete old releases
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          CUTOFF_DATE=$(date -d "30 days ago" +%Y-%m-%d)
+          for release in $(gh api /repos/${{ github.repository }}/releases --paginate | \
+                           jq -r ".[] | select(.published_at < \"$CUTOFF_DATE\") | .id"); do
+            RELEASE_TAG=$(gh api /repos/${{ github.repository }}/releases/$release | jq -r .tag_name)
+            gh api --method DELETE /repos/${{ github.repository }}/releases/$release
+            gh api --method DELETE /repos/${{ github.repository }}/git/refs/tags/$RELEASE_TAG
+          done
