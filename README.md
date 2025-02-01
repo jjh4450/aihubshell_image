@@ -42,7 +42,7 @@ ENTRYPOINT ["/bin/sh"]
 이미 **빌드된 이미지를 GHCR**에서 직접 받아 사용할 수 있습니다.
 
 ```bash
-docker pull ghcr.io/jjh4450/aihubshell_image/aihubshell_unofficial_image:latest
+docker pull ghcr.io/jjh4450/aihubshell_unofficial:latest
 ```
 > 원하시는 다른 버전 태그가 있다면 `:latest` 대신 해당 태그를 지정하세요.
 
@@ -52,7 +52,7 @@ docker pull ghcr.io/jjh4450/aihubshell_image/aihubshell_unofficial_image:latest
 ### 1) 간단 실행
 ```bash
 docker run -it --rm \
-  ghcr.io/jjh4450/aihubshell_image/aihubshell_unofficial_image:latest
+  ghcr.io/jjh4450/aihubshell_unofficial:latest
 ```
 - `-it`: 터미널 상호작용(인터랙티브) 모드  
 - `--rm`: 컨테이너 종료 시 자동 제거  
@@ -66,7 +66,7 @@ aihubshell -mode l
 ### 2) `aihubshell` 명령어 바로 실행
 ```bash
 docker run -it --rm \
-  ghcr.io/jjh4450/aihubshell_image/aihubshell_unofficial_image:latest \
+  ghcr.io/jjh4450/aihubshell_unofficial:latest \
   aihubshell -mode l # 원하는 명령어 입력 가능
 ```
 
@@ -80,7 +80,7 @@ version: "3.8"
 
 services:
   aihub:
-    image: ghcr.io/jjh4450/aihubshell_image/aihubshell_unofficial_image:latest
+    image: ghcr.io/jjh4450/aihubshell_unofficial:latest
     container_name: aihubshell_container
     volumes:
       - ./data:/data  # 호스트의 ./data 폴더를 컨테이너 내부 /data에 연결
@@ -184,4 +184,4 @@ aihubshell -mode d \
 > - **Docker 이미지 이슈**: GitHub Issue로 제보  
 
 **즐거운 AI Hub 데이터 다운로드 되세요!** ☺️  
-[ghcr.io/jjh4450/aihubshell_image/aihubshell_unofficial_image:latest](https://github.com/jjh4450?tab=packages)  
+[ghcr.io/jjh4450/aihubshell_unofficial:latest](https://github.com/jjh4450?tab=packages)  
