@@ -15,7 +15,11 @@ RUN echo '#!/bin/sh' > /usr/local/bin/startup.sh && \
     echo 'echo "*  https://github.com/jjh4450/aihubshell_image *"' >> /usr/local/bin/startup.sh && \
     echo 'echo "************************************************"' >> /usr/local/bin/startup.sh && \
     echo 'echo ""' >> /usr/local/bin/startup.sh && \
-    echo 'exec "$@"' >> /usr/local/bin/startup.sh
+    echo 'if [ "$#" -gt 0 ]; then' >> /usr/local/bin/startup.sh && \
+    echo '    exec "$@"' >> /usr/local/bin/startup.sh && \
+    echo 'else' >> /usr/local/bin/startup.sh && \
+    echo '    exec sh' >> /usr/local/bin/startup.sh && \
+    echo 'fi' >> /usr/local/bin/startup.sh
 
 RUN chmod +x /usr/local/bin/startup.sh
 
