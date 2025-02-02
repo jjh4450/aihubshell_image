@@ -75,11 +75,9 @@ docker run -it --rm \
 
 ## 🤝 docker-compose 사용
 
-볼륨 마운트를 통해 **호스트 디렉토리**에 데이터를 저장하고 싶다면, 예시와 같은 `docker-compose.yml`을 사용할 수 있습니다.
+볼륨 마운트를 통해 **호스트 디렉토리**에 데이터를 저장하고 싶다면, 예시와 같은 `compose.yml`을 사용할 수 있습니다.
 
 ```yaml
-version: "3.8"
-
 services:
   aihub:
     image: ghcr.io/jjh4450/aihubshell_unofficial:latest
