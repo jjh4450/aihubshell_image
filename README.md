@@ -84,6 +84,8 @@ services:
     container_name: aihubshell_container
     volumes:
       - <your_dir>:/data  # 호스트의 경로를 컨테이너 내부 /data(default)에 연결
+    tty: true
+    stdin_open: true
 ```
 
 이후 다음 명령어로 컨테이너를 실행합니다:
