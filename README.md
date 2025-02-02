@@ -85,9 +85,7 @@ services:
     image: ghcr.io/jjh4450/aihubshell_unofficial:latest
     container_name: aihubshell_container
     volumes:
-      - ./data:/data  # 호스트의 ./data 폴더를 컨테이너 내부 /data에 연결
-    tty: true
-    stdin_open: true
+      - <your_dir>:/data  # 호스트의 경로를 컨테이너 내부 /data(default)에 연결
 ```
 
 이후 다음 명령어로 컨테이너를 실행합니다:
