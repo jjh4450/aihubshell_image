@@ -3,6 +3,10 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'Dockerfile'
+      # - 'docker-compose.yml'
+      - '.github/workflows/deploy.yml'
   schedule:
     - cron: '0 0 * * 1'
   workflow_dispatch:
@@ -67,9 +71,13 @@ jobs:
           if [[ "${{ github.event_name }}" == "push" ]]; then
             RELEASE_TYPE="패치 릴리스"
           fi
+          
+          RELEASE_NOTES="Docker 이미지: [${{ env.IMAGE_NAME }}](https://github.com/jjh4450/aihubshell_image/pkgs/container/aihubshell_unofficial)"
+
           gh release create "${{ env.version }}" \
             --generate-notes \
             --title "${RELEASE_TYPE} ${{ env.version }}" \
+            --notes "$RELEASE_NOTES" \
             --draft=false \
             --prerelease=false
 

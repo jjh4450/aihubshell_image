@@ -5,14 +5,14 @@ AI Hub에서 **CLI**로 데이터를 다운로드할 수 있는 툴인 `aihubshe
 
 
 ## 📚 목차
-1. [개요](#개요)  
-2. [이미지 가져오기](#이미지-가져오기)  
-3. [컨테이너 실행](#컨테이너-실행)  
-4. [docker-compose 사용](#docker-compose-사용)  
-5. [사용 예시](#사용-예시)  
-6. [주의사항](#주의사항)  
-7. [보안 및 법적 고지](#보안-및-법적-고지)  
-8. [라이선스](#라이선스)
+1. [개요](-#개요)  
+2. [이미지 가져오기](-#이미지-가져오기)  
+3. [컨테이너 실행](-#컨테이너-실행)  
+4. [docker-compose 사용](-#docker-compose-사용)  
+5. [사용 예시](-#사용-예시)  
+6. [주의사항](-#주의사항)  
+7. [보안 및 법적 고지](-#보안-및-법적-고지)  
+8. [라이선스](-#라이선스)
 
 
 ## 💡 개요
@@ -23,14 +23,15 @@ AI Hub에서 **CLI**로 데이터를 다운로드할 수 있는 툴인 `aihubshe
 - **환경 격리**: 호스트 OS에 영향 없이 동일한 환경 보장  
 - **이식성**: Windows, Mac, Linux 등 어디에서나 일관된 실행 가능  
 
-### Dockerfile 주요 내용
+### Dockerfile 주요 내용(요약)
 ```dockerfile
 FROM alpine:latest
 
 RUN apk update && apk add --no-cache curl unzip
 
-RUN curl -o /usr/local/bin/aihubshell https://api.aihub.or.kr/api/aihubshell.do \
-    && chmod +x /usr/local/bin/aihubshell
+RUN curl -o "aihubshell" https://api.aihub.or.kr/api/aihubshell.do \
+    && chmod +x aihubshell \
+    && cp aihubshell /usr/bin
 
 ENTRYPOINT ["/bin/sh"]
 ```
@@ -45,7 +46,8 @@ ENTRYPOINT ["/bin/sh"]
 docker pull ghcr.io/jjh4450/aihubshell_unofficial:latest
 ```
 > 원하시는 다른 버전 태그가 있다면 `:latest` 대신 해당 태그를 지정하세요.
-
+>
+> 이 이미지는 외부 의존성이 적고 매주 자동 업데이트되어 **`:latest` 태그 사용을 권장합니다.**
 
 ## ⚡ 컨테이너 실행
 

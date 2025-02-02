@@ -11,6 +11,8 @@ RUN echo '#!/bin/sh' > /usr/local/bin/startup.sh && \
     echo 'echo "*  UNOFFICIAL AIHUBSHELL IMAGE                 *"' >> /usr/local/bin/startup.sh && \
     echo 'echo "*  NO WARRANTIES OR LEGAL LIABILITY PROVIDED.  *"' >> /usr/local/bin/startup.sh && \
     echo 'echo "*  USE AT YOUR OWN RISK.                       *"' >> /usr/local/bin/startup.sh && \
+    echo 'echo "*               ↓↓↓ MORE INFO ↓↓↓              *"' >> /usr/local/bin/startup.sh && \
+    echo 'echo "*  https://github.com/jjh4450/aihubshell_image *"' >> /usr/local/bin/startup.sh && \
     echo 'echo "************************************************"' >> /usr/local/bin/startup.sh && \
     echo 'echo ""' >> /usr/local/bin/startup.sh && \
     echo 'exec "$@"' >> /usr/local/bin/startup.sh
